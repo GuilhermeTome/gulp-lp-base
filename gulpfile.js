@@ -8,6 +8,7 @@ const babel = require('gulp-babel');
 const cssimport = require('gulp-cssimport');
 const image = require('gulp-image');
 var clean = require('gulp-clean-fix');
+const webp = require('gulp-webp');
 
 function cleaner() {
     return src('public/*', {read:false})
@@ -42,6 +43,7 @@ function css() {
 function images() {
     return src('src/images/*')
     .pipe(image())
+    .pipe(webp())
     .pipe(dest('public/assets/images/'));
 }
 
@@ -53,6 +55,31 @@ exports.default = series(
 exports.noImages = series(
     parallel(html, js, css)
 );
+
+// Watch files
+
+exports.watchAll = () => {
+    watch('src/html/*', html);
+    watch('src/js/*.js', js);
+    watch('src/css/*', css);
+    watch('src/images/*', images);
+}
+
+exports.watchHtml = () => {
+    watch('src/html/*', html);
+}
+
+exports.watchCss = () => {
+    watch('src/css/*', css);
+}
+
+exports.watchJs = () => {
+    watch('src/js/*.js', js);
+}
+
+exports.watchImages = () => {
+    watch('src/images/*', images);
+}
 
 // Only one type of files
 
