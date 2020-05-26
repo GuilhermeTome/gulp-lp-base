@@ -1,14 +1,21 @@
 const { src, dest, series, parallel } = require('gulp');
 const rename = require('gulp-rename');
+const clean = require('gulp-clean-fix');
+
 const minifyHTML = require('gulp-html-minifier-terser');
 const minifyJS = require('gulp-uglify');
 const minifyCSS = require('gulp-uglifycss');
+
 const sass = require('gulp-sass');
 const babel = require('gulp-babel');
 const cssimport = require('gulp-cssimport');
+
 const image = require('gulp-image');
-var clean = require('gulp-clean-fix');
 const webp = require('gulp-webp');
+
+const postcss = require('gulp-postcss');
+const uncss = require('postcss-uncss');
+
 
 function cleaner() {
     return src('public/*', {read:false})
@@ -32,10 +39,17 @@ function js() {
 }
 
 function css() {
+    /*var files   = ['index.html'];
+    var options = {
+        csspath      : '../public/assets/css/',
+        htmlroot     : '../public',
+    };*/
+
     return src('src/css/index.css')
     .pipe(cssimport())
     .pipe(sass())
     .pipe(minifyCSS())
+    //.pipe(postcss(uncss(files, options)))
     .pipe(rename({basename:'main', extname:'.min.css'}))
     .pipe(dest('public/assets/css'));
 }
@@ -49,11 +63,13 @@ function images() {
 
 exports.default = series(
     cleaner,
-    parallel(html, js, css, images)
+    parallel(html, js, images),
+    css
 );
 
 exports.noImages = series(
-    parallel(html, js, css)
+    parallel(html, js),
+    css
 );
 
 // Watch files
