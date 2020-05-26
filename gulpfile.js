@@ -15,35 +15,27 @@ function cleaner() {
 }
 
 function html() {
-    return src('src/templates/*.html')
+    return src('src/html/*.html')
     .pipe(minifyHTML({ collapseWhitespace: true }))
     .pipe(dest('public/'));
 }
 
 function js() {
-    return src('src/js/*.js')
+    return src('src/js/index.js')
     .pipe(babel({
         presets:['@babel/env']
     }))
     .pipe(minifyJS())
-    .pipe(rename({extname:'.min.js'}))
+    .pipe(rename({basename:'main',extname:'.min.js'}))
     .pipe(dest('public/assets/js'));
 }
 
 function css() {
-    return src('src/css/*.css')
+    return src('src/css/index.css')
     .pipe(cssimport())
     .pipe(sass())
     .pipe(minifyCSS())
-    .pipe(rename({extname:'.min.css'}))
-    .pipe(dest('public/assets/css'));
-}
-
-function base() {
-    return src('src/css/base.scss')
-    .pipe(sass())
-    .pipe(minifyCSS())
-    .pipe(rename({extname:'.min.css'}))
+    .pipe(rename({basename:'main', extname:'.min.css'}))
     .pipe(dest('public/assets/css'));
 }
 
@@ -55,5 +47,27 @@ function images() {
 
 exports.default = series(
     cleaner,
-    parallel(html, js, base, images)
+    parallel(html, js, css, images)
+);
+
+exports.noImages = series(
+    parallel(html, js, css)
+);
+
+// Only one type of files
+
+exports.onlyHtml = series(
+    html
+);
+
+exports.onlyCss = series(
+    css
+);
+
+exports.onlyJs = series(
+    js
+);
+
+exports.onlyImages = series(
+    images
 );
