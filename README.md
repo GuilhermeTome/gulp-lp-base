@@ -41,11 +41,7 @@ npm install
 * Move your files to a ./public folder
 * Optimize you images
 * Convert images to WebP format
-
-### Future functions
-
-* Run post-css
-* Kill unused css
+* Kill your extra css with UnCSS
 
 ## How to use
 
@@ -81,7 +77,7 @@ gulp onlyJs
 gulp onlyImages
 ```
 
-### In development zone tou can you watcher's
+### In development zone you can you watcher's
 
 * Watch all files
 ```
@@ -111,7 +107,7 @@ gulp watchImages
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate.
 
-If you with, send me a private message in LinkedIn ou in email (guilherme.tome2002@gmail.com or guigo.reis90@gmail.com).
+If you wish, send me a private message in LinkedIn or in email (guilherme.tome2002@gmail.com or guigo.reis90@gmail.com).
 
 ## License
 

@@ -8,14 +8,14 @@ const minifyCSS = require('gulp-uglifycss');
 
 const sass = require('gulp-sass');
 const babel = require('gulp-babel');
-const cssimport = require('gulp-cssimport');
+
+const cssimport = require("gulp-cssimport");
+const jsimport = require("gulp-js-import");
 
 const image = require('gulp-image');
 const webp = require('gulp-webp');
 
-const postcss = require('gulp-postcss');
-const uncss = require('postcss-uncss');
-
+const uncss = require('gulp-uncss');
 
 function cleaner() {
     return src('public/*', {read:false})
@@ -30,6 +30,7 @@ function html() {
 
 function js() {
     return src('src/js/index.js')
+    .pipe(jsimport({hideConsole: true}))
     .pipe(babel({
         presets:['@babel/env']
     }))
@@ -39,18 +40,21 @@ function js() {
 }
 
 function css() {
-    /*var files   = ['index.html'];
-    var options = {
-        csspath      : '../public/assets/css/',
-        htmlroot     : '../public',
-    };*/
-
     return src('src/css/index.css')
-    .pipe(cssimport())
+    .pipe(cssimport({
+        extensions: ["css", "scss"]
+    }))
     .pipe(sass())
     .pipe(minifyCSS())
-    //.pipe(postcss(uncss(files, options)))
     .pipe(rename({basename:'main', extname:'.min.css'}))
+    .pipe(dest('public/assets/css'));
+}
+
+function killCss() {
+    return src('public/assets/css/main.min.css')
+    .pipe(uncss({
+        html: ['./public/index.html']
+    }))
     .pipe(dest('public/assets/css'));
 }
 
@@ -64,12 +68,14 @@ function images() {
 exports.default = series(
     cleaner,
     parallel(html, js, images),
-    css
+    css,
+    killCss
 );
 
 exports.noImages = series(
     parallel(html, js),
-    css
+    css,
+    killCss
 );
 
 // Watch files
@@ -77,7 +83,10 @@ exports.noImages = series(
 exports.watchAll = () => {
     watch('src/html/*', html);
     watch('src/js/*.js', js);
-    watch('src/css/*', css);
+    watch('src/css/*', series(
+        css,
+        killCss
+    ));
     watch('src/images/*', images);
 }
 
@@ -86,7 +95,10 @@ exports.watchHtml = () => {
 }
 
 exports.watchCss = () => {
-    watch('src/css/*', css);
+    watch('src/css/*', series(
+        css,
+        killCss
+    ));
 }
 
 exports.watchJs = () => {
@@ -104,7 +116,8 @@ exports.onlyHtml = series(
 );
 
 exports.onlyCss = series(
-    css
+    css,
+    killCss
 );
 
 exports.onlyJs = series(
