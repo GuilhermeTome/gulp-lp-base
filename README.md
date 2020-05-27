@@ -77,7 +77,7 @@ gulp onlyJs
 gulp onlyImages
 ```
 
-### In development zone you can you watcher's
+### In development zone you can use watcher's
 
 * Watch all files
 ```
@@ -103,6 +103,12 @@ gulp watchJs
 ```
 gulp watchImages
 ```
+
+### To build more than 1 page
+
+Ig you need more pages, need to configure your UnCSS plugin into gulpfile.js in killCss function. For more informations read the original docs.
+
+[Click here to read the docs](https://github.com/ben-eb/gulp-uncss)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate.
